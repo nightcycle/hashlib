@@ -1,15 +1,22 @@
 {
-    "name": "@boatbomber/hashlib",
-    "version": "1.0.0",
-    "license": "MIT",
-    "repository": {
-        "type": "git",
-        "url": "https://github.com/boatbomber/HashLib.git"
-    },
-    "contributors": [
-        "boatbomber"
-    ],
-    "bugs": {
-        "url": "https://github.com/boatbomber/HashLib/issues"
-    }
+	"name": "@nightcycle/hashlib",
+	"version": "1.0.2",
+	"description": "a package",
+	"license": "Apache-2.0",
+	"author": "nightcycle <coyer@nightcycle.us>",
+	"repository": {
+		"type": "git",
+		"url": "git+https://github.com/nightcycle/hashlib.git"
+	},
+	"main": "src/init.luau",
+	"scripts": {
+		"prepare": "npmluau"
+	},
+	"dependencies": {},
+	"devDependencies": {
+		"npmluau": "^0.1.1"
+	},
+	"keywords": [
+		"luau"
+	]
 }

@@ -1,12 +1,19 @@
-# Project build files
-/*.rbxl
-/*.rbxlx
-/*.rbxm
-/*.rbxmx
+# Directories
+Packages/**
+types
+lints
+build
+serve
+node_modules
 
-# Roblox Studio lock files
-/*.rbxlx.lock
-/*.rbxl.lock
+# Files
+sourcemap.json
+darklua-sourcemap.json
+wally.lock
+keys.txt
 
-# VS Code files
-.vscode/*
+# File types
+*.lock
+*.gitconfig
+*.rbxlx
+*.rbxl

@@ -1,3 +1,4 @@
+--!nonstrict
 --[=[------------------------------------------------------------------------------------------------------------------------
 -- HashLib by Egor Skriptunoff, boatbomber, and howmanysmall
 
@@ -63,7 +64,7 @@ API:
 --]=]
 ---------------------------------------------------------------------------
 
-local Base64 = require(script.Base64)
+local base64 = require("./base64")
 
 --------------------------------------------------------------------------------
 -- LOCALIZATION FOR VM OPTIMIZATIONS
@@ -96,13 +97,14 @@ local sha2_H_ext256 = {
 	[256] = sha2_H_hi,
 }
 
-local sha2_H_ext512_lo, sha2_H_ext512_hi = {
-	[384] = {},
-	[512] = sha2_H_lo,
-}, {
-	[384] = {},
-	[512] = sha2_H_hi,
-}
+local sha2_H_ext512_lo, sha2_H_ext512_hi =
+	{
+		[384] = {},
+		[512] = sha2_H_lo,
+	}, {
+		[384] = {},
+		[512] = sha2_H_hi,
+	}
 
 local md5_K, md5_sha1_H = {}, { 0x67452301, 0xEFCDAB89, 0x98BADCFE, 0x10325476, 0xC3D2E1F0 }
 local md5_next_shift = {
@@ -218,8 +220,10 @@ local function sha256_feed_64(H, str, offs, size)
 				+ bit32_bxor(bit32_rrotate(a, 2), bit32_rrotate(a, 13), bit32_lrotate(a, 10))
 		end
 
-		h1, h2, h3, h4 = (a + h1) % 4294967296, (b + h2) % 4294967296, (c + h3) % 4294967296, (d + h4) % 4294967296
-		h5, h6, h7, h8 = (e + h5) % 4294967296, (f + h6) % 4294967296, (g + h7) % 4294967296, (h + h8) % 4294967296
+		h1, h2, h3, h4 =
+			(a + h1) % 4294967296, (b + h2) % 4294967296, (c + h3) % 4294967296, (d + h4) % 4294967296
+		h5, h6, h7, h8 =
+			(e + h5) % 4294967296, (f + h6) % 4294967296, (g + h7) % 4294967296, (h + h8) % 4294967296
 	end
 
 	H[1], H[2], H[3], H[4], H[5], H[6], H[7], H[8] = h1, h2, h3, h4, h5, h6, h7, h8
@@ -266,8 +270,10 @@ local function sha512_feed_128(H_lo, H_hi, str, offs, size)
 			W[jj] = tmp2
 		end
 
-		local a_lo, b_lo, c_lo, d_lo, e_lo, f_lo, g_lo, h_lo = h1_lo, h2_lo, h3_lo, h4_lo, h5_lo, h6_lo, h7_lo, h8_lo
-		local a_hi, b_hi, c_hi, d_hi, e_hi, f_hi, g_hi, h_hi = h1_hi, h2_hi, h3_hi, h4_hi, h5_hi, h6_hi, h7_hi, h8_hi
+		local a_lo, b_lo, c_lo, d_lo, e_lo, f_lo, g_lo, h_lo =
+			h1_lo, h2_lo, h3_lo, h4_lo, h5_lo, h6_lo, h7_lo, h8_lo
+		local a_hi, b_hi, c_hi, d_hi, e_hi, f_hi, g_hi, h_hi =
+			h1_hi, h2_hi, h3_hi, h4_hi, h5_hi, h6_hi, h7_hi, h8_hi
 		for j = 1, 80 do
 			local jj = 2 * j
 			local tmp1 = bit32_bxor(
@@ -373,8 +379,10 @@ local function md5_feed_64(H, str, offs, size)
 
 		s = 27
 		for j = 17, 32 do
-			local F = bit32_rrotate(bit32_band(d, b) + bit32_band(-1 - d, c) + a + K[j] + W[(5 * j - 4) % 16 + 1], s)
-				+ b
+			local F = bit32_rrotate(
+				bit32_band(d, b) + bit32_band(-1 - d, c) + a + K[j] + W[(5 * j - 4) % 16 + 1],
+				s
+			) + b
 			s = md5_next_shift[s]
 			a = d
 			d = c
@@ -384,7 +392,8 @@ local function md5_feed_64(H, str, offs, size)
 
 		s = 28
 		for j = 33, 48 do
-			local F = bit32_rrotate(bit32_bxor(bit32_bxor(b, c), d) + a + K[j] + W[(3 * j + 2) % 16 + 1], s) + b
+			local F = bit32_rrotate(bit32_bxor(bit32_bxor(b, c), d) + a + K[j] + W[(3 * j + 2) % 16 + 1], s)
+				+ b
 			s = md5_next_shift[s]
 			a = d
 			d = c
@@ -394,7 +403,10 @@ local function md5_feed_64(H, str, offs, size)
 
 		s = 26
 		for j = 49, 64 do
-			local F = bit32_rrotate(bit32_bxor(c, bit32_bor(b, -1 - d)) + a + K[j] + W[(j * 7 - 7) % 16 + 1], s) + b
+			local F = bit32_rrotate(
+				bit32_bxor(c, bit32_bor(b, -1 - d)) + a + K[j] + W[(j * 7 - 7) % 16 + 1],
+				s
+			) + b
 			s = md5_next_shift[s]
 			a = d
 			d = c
@@ -446,7 +458,12 @@ local function sha1_feed_64(H, str, offs, size)
 		end
 
 		for j = 41, 60 do
-			local z = bit32_lrotate(a, 5) + bit32_band(d, c) + bit32_band(b, bit32_bxor(d, c)) + 0x8F1BBCDC + W[j] + e -- TWO_POW_30 * sqrt(5)
+			local z = bit32_lrotate(a, 5)
+				+ bit32_band(d, c)
+				+ bit32_band(b, bit32_bxor(d, c))
+				+ 0x8F1BBCDC
+				+ W[j]
+				+ e -- TWO_POW_30 * sqrt(5)
 			e = d
 			d = c
 			c = bit32_rrotate(b, 2)
@@ -873,7 +890,13 @@ for width = 224, 256, 32 do
 		end
 	end
 
-	sha512_feed_128(H_lo, H_hi, "SHA-512/" .. tostring(width) .. "\128" .. string.rep("\0", 115) .. "\88", 0, 128)
+	sha512_feed_128(
+		H_lo,
+		H_hi,
+		"SHA-512/" .. tostring(width) .. "\128" .. string.rep("\0", 115) .. "\88",
+		0,
+		128
+	)
 	sha2_H_ext512_lo[width] = H_lo
 	sha2_H_ext512_hi[width] = H_hi
 end
@@ -1243,7 +1266,9 @@ local function keccak(block_size_in_bytes, digest_size_in_bytes, is_SHAKE, messa
 				tail = tail
 					.. (
 						#tail + 1 == block_size_in_bytes and string.char(gap_start + 128)
-						or string.char(gap_start) .. string.rep("\0", (-2 - #tail) % block_size_in_bytes) .. "\128"
+						or string.char(gap_start)
+							.. string.rep("\0", (-2 - #tail) % block_size_in_bytes)
+							.. "\128"
 					)
 				keccak_feed(lanes_lo, lanes_hi, tail, 0, #tail, block_size_in_bytes)
 				tail = nil
@@ -1426,8 +1451,13 @@ for Index = 0, 255 do
 	BinaryStringMap[string.format("%02x", Index)] = string.char(Index)
 end
 
--- Update 02.14.20 - added AsBinary for easy GameAnalytics replacement.
-local function hmac(hash_func, key, message, AsBinary)
+-- Update 02.14.20 - added asBinary for easy GameAnalytics replacement.
+local function hmac(
+	hash_func: (message: string?) -> string,
+	key: string,
+	message: string,
+	asBinary: boolean
+): string
 	-- Create an instance (private objects for current calculation)
 	local block_size = block_size_for_HMAC[hash_func]
 	if not block_size then
@@ -1469,7 +1499,7 @@ local function hmac(hash_func, key, message, AsBinary)
 	if message then
 		-- Actually perform calculations and return the HMAC of a message
 		local FinalMessage = partial(message)()
-		return AsBinary and (string.gsub(FinalMessage, "%x%x", BinaryStringMap)) or FinalMessage
+		return asBinary and (string.gsub(FinalMessage, "%x%x", BinaryStringMap)) or FinalMessage
 	else
 		-- Return function for chunk-by-chunk loading of a message
 		-- User should feed every chunk of the message as single argument to this function and finally get HMAC by invoking this function without an argument
@@ -1478,65 +1508,91 @@ local function hmac(hash_func, key, message, AsBinary)
 end
 
 local sha = {
-	md5 = md5,
-	sha1 = sha1,
+	md5 = function(message: string): string
+		local out = md5(message) :: any
+		return out
+	end,
+	sha1 = function(message: string): string
+		local out = sha1(message) :: any
+		return out
+	end,
 	-- SHA2 hash functions:
-	sha224 = function(message)
-		return sha256ext(224, message)
+	sha224 = function(message: string): string
+		local out = sha256ext(224, message) :: any
+		return out
 	end,
 
-	sha256 = function(message)
-		return sha256ext(256, message)
+	sha256 = function(message: string): string
+		local out = sha256ext(256, message) :: any
+		return out
+	end,
+	sha512_224 = function(message: string): string
+		local out = sha512ext(224, message) :: any
+		return out
 	end,
 
-	sha512_224 = function(message)
-		return sha512ext(224, message)
+	sha512_256 = function(message: string): string
+		local out = sha512ext(256, message) :: any
+		return out
 	end,
 
-	sha512_256 = function(message)
-		return sha512ext(256, message)
+	sha384 = function(message: string): string
+		local out = sha512ext(384, message) :: any
+		return out
 	end,
 
-	sha384 = function(message)
-		return sha512ext(384, message)
-	end,
-
-	sha512 = function(message)
-		return sha512ext(512, message)
+	sha512 = function(message: string): string
+		local out = sha512ext(512, message) :: any
+		return out
 	end,
 
 	-- SHA3 hash functions:
-	sha3_224 = function(message)
-		return keccak((1600 - 2 * 224) / 8, 224 / 8, false, message)
+	sha3_224 = function(message: string): string
+		local out: any = keccak((1600 - 2 * 224) / 8, 224 / 8, false, message)
+		return out
 	end,
 
-	sha3_256 = function(message)
-		return keccak((1600 - 2 * 256) / 8, 256 / 8, false, message)
+	sha3_256 = function(message: string): string
+		local out: any = keccak((1600 - 2 * 256) / 8, 256 / 8, false, message)
+		return out
 	end,
 
-	sha3_384 = function(message)
-		return keccak((1600 - 2 * 384) / 8, 384 / 8, false, message)
+	sha3_384 = function(message: string): string
+		local out: any = keccak((1600 - 2 * 384) / 8, 384 / 8, false, message)
+		return out
 	end,
 
-	sha3_512 = function(message)
-		return keccak((1600 - 2 * 512) / 8, 512 / 8, false, message)
+	sha3_512 = function(message: string): string
+		local out: any = keccak((1600 - 2 * 512) / 8, 512 / 8, false, message)
+		return out
 	end,
 
-	shake128 = function(message, digest_size_in_bytes)
-		return keccak((1600 - 2 * 128) / 8, digest_size_in_bytes, true, message)
+	shake128 = function(message, digest_size_in_bytes: string): string
+		local out: any = keccak((1600 - 2 * 128) / 8, digest_size_in_bytes, true, message)
+		return out
 	end,
 
-	shake256 = function(message, digest_size_in_bytes)
-		return keccak((1600 - 2 * 256) / 8, digest_size_in_bytes, true, message)
+	shake256 = function(message, digest_size_in_bytes: string): string
+		local out: any = keccak((1600 - 2 * 256) / 8, digest_size_in_bytes, true, message)
+		return out
 	end,
 
 	-- misc utilities:
 	hmac = hmac, -- HMAC(hash_func, key, message) is applicable to any hash function from this module except SHAKE*
-	hex_to_bin = hex2bin, -- converts hexadecimal representation to binary string
-	base64_to_bin = base642bin, -- converts base64 representation to binary string
-	bin_to_base64 = bin2base64, -- converts binary string to base64 representation
-	base64_encode = Base64.Encode,
-	base64_decode = Base64.Decode,
+	hex_to_bin = function(message: string): string
+		local out = hex2bin(message) :: any
+		return out
+	end, -- converts hexadecimal representation to binary string
+	base64_to_bin = function(message: string): string
+		local out = base642bin(message) :: any
+		return out
+	end, -- converts base64 representation to binary string
+	bin_to_base64 = function(message: string): string
+		local out = bin2base64(message) :: any
+		return out
+	end, -- converts binary string to base64 representation
+	base64_encode = base64.encode,
+	base64_decode = base64.decode,
 }
 
 block_size_for_HMAC = {

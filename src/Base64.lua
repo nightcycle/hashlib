@@ -32,15 +32,15 @@ local bit32_band = bit32.band
 
 --[[**
 	Encodes a string in Base64.
-	@param [t:string] Input The input string to encode.
+	@param [t:string] input The input string to encode.
 	@returns [t:string] The string encoded in Base64.
 **--]]
-function Base64.Encode(Input)
+function Base64.encode(input: string): string
 	local Output = {}
 	local Length = 0
 
-	for Index = 1, #Input, 3 do
-		local C1, C2, C3 = string.byte(Input, Index, Index + 2)
+	for Index = 1, #input, 3 do
+		local C1, C2, C3 = string.byte(input, Index, Index + 2)
 
 		local A = bit32_rshift(C1, 2)
 		local B = bit32_lshift(bit32_band(C1, 3), 4) + bit32_rshift(C2 or 0, 4)
@@ -68,9 +68,8 @@ function Base64.Encode(Input)
 		NewLength = NewLength + 1
 		IndexAdd4096Sub1 = Index + 4096 - 1
 
-		NewOutput[NewLength] = string.char(
-			table.unpack(Output, Index, IndexAdd4096Sub1 > Length and Length or IndexAdd4096Sub1)
-		)
+		NewOutput[NewLength] =
+			string.char(table.unpack(Output, Index, IndexAdd4096Sub1 > Length and Length or IndexAdd4096Sub1))
 	end
 
 	return table.concat(NewOutput)
@@ -78,15 +77,15 @@ end
 
 --[[**
 	Decodes a string from Base64.
-	@param [t:string] Input The input string to decode.
+	@param [t:string] input The input string to decode.
 	@returns [t:string] The newly decoded string.
 **--]]
-function Base64.Decode(Input)
+function Base64.decode(input: string): string
 	local Output = {}
 	local Length = 0
 
-	for Index = 1, #Input, 4 do
-		local C1, C2, C3, C4 = string.byte(Input, Index, Index + 3)
+	for Index = 1, #input, 4 do
+		local C1, C2, C3, C4 = string.byte(input, Index, Index + 3)
 
 		local I1 = Indexes[C1] - 1
 		local I2 = Indexes[C2] - 1
@@ -119,9 +118,8 @@ function Base64.Decode(Input)
 		NewLength = NewLength + 1
 		IndexAdd4096Sub1 = Index + 4096 - 1
 
-		NewOutput[NewLength] = string.char(
-			table.unpack(Output, Index, IndexAdd4096Sub1 > Length and Length or IndexAdd4096Sub1)
-		)
+		NewOutput[NewLength] =
+			string.char(table.unpack(Output, Index, IndexAdd4096Sub1 > Length and Length or IndexAdd4096Sub1))
 	end
 
 	return table.concat(NewOutput)

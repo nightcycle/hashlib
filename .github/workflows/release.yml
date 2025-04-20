@@ -58,8 +58,8 @@ jobs:
       - name: install wally packages
         run: sh scripts/wally-install.sh "dev.project.json"
 
-      # - name: build validate project
-      #   run: sh scripts/validate.sh --wally
+      - name: build validate project
+        run: sh scripts/build.sh --wally
 
       - name: Update version and labels
         shell: bash

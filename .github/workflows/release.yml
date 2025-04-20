@@ -58,6 +58,9 @@ jobs:
       - name: install wally packages
         run: sh scripts/wally-install.sh "dev.project.json"
 
+      - name: download types
+        run: sh scripts/download-types.sh
+
       - name: build validate project
         run: sh scripts/build.sh --wally
 

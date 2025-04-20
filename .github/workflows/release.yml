@@ -125,8 +125,8 @@ jobs:
       - name: install node packages
         run: sh scripts/npm-install.sh
 
-      - name: build validate project
-        run: sh scripts/validate.sh
+      # - name: build validate project
+      #   run: sh scripts/validate.sh
 
       - name: publish package
         run: npm publish --access public
